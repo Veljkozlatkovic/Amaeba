@@ -26,3 +26,7 @@ Then enable the plugin on the Project Settings and use new class in your scenes.
 ## License
 
 [MIT License](LICENSE). Copyright (c) 2022 Nikolay Lebedev aka nklbdev.
+
+
+// ovo je promenjeno
+
