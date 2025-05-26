@@ -35,8 +35,8 @@ func move(amount: Vector2):
 	
 
 
-func _process(delta):
-	if(!ended):
+func _process(delta):# delta - vremenski razmak izmedju frameova - krecu se istom brzinom nezavisno od fps
+	if(!ended):      # fps - frekvencija, delta - talasna duzina
 		refreshVector()
 		
 		#refreshing done, next is reacting, should be sepparate func
@@ -63,8 +63,8 @@ var inputVector=[0,0,0,0,0,0,0,0]
 							randf()-.5,randf()-.5,
 ]
 
-func refreshVector():
-	inputVector=[0,0,0,0,0,0,0,0]
+func refreshVector(): 
+	inputVector=[0,0,0,0,0,0,0,0] # polarne koordinate, ali podeljeno u 8 "korpe" - bining
 	for e in Enemies:
 		var enemyOrientation: Vector2 = e.position-$Volvox.position
 		var enemyMagnitude = enemyOrientation.length()

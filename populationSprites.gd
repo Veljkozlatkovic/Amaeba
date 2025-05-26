@@ -30,7 +30,8 @@ class Individual extends Object:
 	func getScore(score):
 		self.score=score
 		print(self.score)
-		printerr("got score")
+		#printerr("got score")
+		print("Got score:")
 		if score>self.bestScore:
 			self.bestScore=score
 		self.gotScore.emit(self)
@@ -63,6 +64,9 @@ func select(population):
 	for i in range(int(len(population)/2)):
 		chosen.append(population[i])
 	return chosen;
+	
+	
+	
 func cross(population):
 	# ovde kucate kod koji obavlja proces ukrstanja
 	# cilj je da se napravi nov objekat sa reflexMatrix
@@ -157,5 +161,3 @@ func _ready():
 
 func _process(delta):
 	pass
-
-
