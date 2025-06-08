@@ -1,3 +1,4 @@
+#moja ideja je da uzmemo dva najbolja i da oni budu roditelji za naredno dete. Onaj koji je bio najbolji ostaje a ovaj drugi gine. ali sada imamo dete/cu od njih.Idalje ne znam koliko. A ove ostale 4-6 mogu da mutiram stalno i tako dobijam  stalno nov input za ove koje cuvam kako generacije prolaze.
 extends Node2D
 
 @export var Individuals:Array
@@ -26,13 +27,13 @@ class Individual extends Object:
 	var genes=[]
 	var representation:Area2D=null
 	var score=-1
-	var bestScore=0
+	var bestScore=0   #!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!11
 	func getScore(score):
 		self.score=score
 		print(self.score)
 		printerr("got score")
-		if score>self.bestScore:
-			self.bestScore=score
+		if score>self.bestScore: #TODO BITNO!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! 
+			self.bestScore=score # ne mogu da ukapiram gde se "best score" cuva i kako da ga primenim.
 		self.gotScore.emit(self)
 	
 	signal gotScore(individual:Individual)
@@ -60,9 +61,12 @@ func select(population):
 	# jedinke populacije su sortirane po uspesnosti
 	# pa samo uzimamo uspesniju polovinu
 	var chosen=[]
+	#chosen.append(self.bestScore)# definitivno ne moze ovako
+	#chosen.append()
 	for i in range(int(len(population)/2)):
-		chosen.append(population[i])
+		chosen.append(population[i])  #!BITNO - u chosen mogu da stavljam samo preko population niza koliko vidim, nisam siguran.
 	return chosen;
+	
 func cross(population):
 	# ovde kucate kod koji obavlja proces ukrstanja
 	# cilj je da se napravi nov objekat sa reflexMatrix
@@ -82,7 +86,8 @@ func cross(population):
 		var parent2=population[randi_range(0,len(population)-1)];
 		#kopiranje matrice
 		var child1=[]
-		var child2=[]
+		var child2=[]   #ovo se trenutno ne koristi, red 96 ako zelis da ga koristis
+		
 		for i in range(16):# broj elemenata matrice (gena)
 			var odabir=randf() 	#bacamo novcic i biramo gen prvog 
 								# ili drugog roditelja
@@ -93,12 +98,12 @@ func cross(population):
 				child2.append(parent1.genes[i])
 				child1.append(parent2.genes[i])
 		children.append(Individual.new(child1,str(numberOfIndividuals)))
-		#children.append(Individual.new(child2,str(numberOfIndividuals+1)))
+		#children.append(Individual.new(child2,str(numberOfIndividuals+1))) 
 		numberOfIndividuals+=1
 	return children
 
 var numberOfIndividuals=0
-func mutate(population):
+func mutate(population):     # ovo vrv i ostavljam da bude random ali samo za najgora 4 ili 6(smislicu) 
 	# ovde kucate kod koji obavlja proces mutacije.
 	# izaberete jednu, ili mali broj jedinki,
 	# i promenite joj nasumicno na neki nacin reflexMatrix
@@ -113,7 +118,7 @@ func newGeneration():
 	Individuals.sort_custom(func(ind1,ind2) : return ind1.score>ind2.score)
 	for i in Individuals:
 		population.append(shallowCopy(i))
-	population=mutate(cross(select(population)))
+	population=mutate(cross(select(population)))   # !BITNO za znati zbog razumevanja ostatka...............
 	reset(population);
 
 func reset(population):
