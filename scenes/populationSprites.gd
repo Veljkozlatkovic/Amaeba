@@ -4,7 +4,7 @@ extends Node2D
 @export var Individuals:Array
 @export var MainScene: PackedScene
 
-func createRandom():
+func createRandom():  #red 157
 	var reflexMatrix=[		randf()-.5,randf()-.5,
 							randf()-.5,randf()-.5,
 							randf()-.5,randf()-.5,
@@ -60,11 +60,27 @@ func select(population):
 	# primer:
 	# jedinke populacije su sortirane po uspesnosti
 	# pa samo uzimamo uspesniju polovinu
+	
+	
+	#####population.sort_custom(func(a, b): return a.score > b.score)  # https://www.reddit.com/r/godot/comments/kvrzto/sorting_an_array_with_names_and_scores/
+	
 	var chosen=[]
 	#chosen.append(self.bestScore)# definitivno ne moze ovako
-	#chosen.append()
+#	chosen.append(population[0]) # da uvek sacuva onog ciji je rezultat najbolji????????????????? Ne znam da li je ovo potrebno i da li ide ovde
+	####^red iznad sacuva najboljeg iz prethodne generacije i stavi ga na prvo mesto ali ga ne cuva ako umre opet.
+	
+	
+	#if(Ind_got_score(population[0]) > bestScore):
+		#chosen[0] = population[0]
+
+		
+	
 	for i in range(int(len(population)/2)):
 		chosen.append(population[i])  #!BITNO - u chosen mogu da stavljam samo preko population niza koliko vidim, nisam siguran.
+	
+	
+		
+   # shallowcopy(population[0])
 	return chosen;
 	
 func cross(population):
@@ -74,17 +90,25 @@ func cross(population):
 	# primer:
 	var children=[]
 	# polovina sledece populacije ce biti roditelji
-	for p in population:
+	#children.append(population[0])####mozda ovde bolje radi ovo iz 67. reda? # ne radi ni to bas kako sam hteo
+	for p in population: # sve je pod ovu petlju,a ne bi trebalo da bude, trebalo bi da bude samo naredni red. Ali kada prebacim da sve bude van ovoga, pravi mi probleme
 		children.append(p)
-	#ukrstamo na dalje nasumicno 2 roditelja tako da dobijemo uvek
+		
+		
+	#ukrstamo na dalje nasumicno 2 roditelja tako da dobijemo uvek!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 	# 2 deteta sa "suprotnim" osobinama oba roditelja
 	# tako cemo ponovo dobiti isti broj jedinki za sledecu generaciju
-	for parent1 in population:
+	#for parent1 in population:
 		# izabrati 2 roditelja, prvi uzimamo redom, a drugog 
 		# biramo nasumicno. Ovaj deo koda mozete da menjate 
 		# odabir je na vama, ovo je samo primer
-		var parent2=population[randi_range(0,len(population)-1)];
-		#kopiranje matrice
+		
+		#var parent2=population[randi_range(0,len(population)-1)];
+		
+		#ideja: ako je trenutni parent1 taj sa bestScore onda taj se izabere 
+		var parent1=population[0]; #roditelji su dve amebe sa najboljim rezultatom, ne znam da li ovo zapravo ovako radi ili ne, mozda sam se zeznuo
+		var parent2=population[1];
+		#kopiranje matrice 
 		var child1=[]
 		var child2=[]   #ovo se trenutno ne koristi, red 96 ako zelis da ga koristis
 		
@@ -98,7 +122,7 @@ func cross(population):
 				child2.append(parent1.genes[i])
 				child1.append(parent2.genes[i])
 		children.append(Individual.new(child1,str(numberOfIndividuals)))
-		#children.append(Individual.new(child2,str(numberOfIndividuals+1))) 
+	#	children.append(Individual.new(child2,str(numberOfIndividuals+1)))############################################ovo je bilo pod komentar 
 		numberOfIndividuals+=1
 	return children
 
@@ -107,7 +131,7 @@ func mutate(population):     # ovo vrv i ostavljam da bude random ali samo za na
 	# ovde kucate kod koji obavlja proces mutacije.
 	# izaberete jednu, ili mali broj jedinki,
 	# i promenite joj nasumicno na neki nacin reflexMatrix
-	var mutated=population[randi_range(0,len(population)-1)]
+	var mutated=population[randi_range(2,len(population)-1)]  #stavljeno da roditelji(2 sa najboljim rezultatom) nikada ne mutiraju a da svi ostali mogu da bi se cuvao rezultat od ta 2 najbolja
 	mutated.genes[randi_range(0,16-1)]=randf()-0.5
 	mutated.name=mutated.name+"M"
 	return population;
