@@ -15,8 +15,7 @@ func createRandom():  #red 157
 							randf()-.5,randf()-.5,
 	]
 	return reflexMatrix
-
-
+	
 class Individual extends Object:
 	func _init(genes,name):
 		self.genes=genes
@@ -27,13 +26,14 @@ class Individual extends Object:
 	var genes=[]
 	var representation:Area2D=null
 	var score=-1
-	var bestScore=0   #!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!11
+	var bestScore=0   #!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 	func getScore(score):
 		self.score=score
 		print(self.score)
 		printerr("got score")
 		if score>self.bestScore: #TODO BITNO!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! 
 			self.bestScore=score # ne mogu da ukapiram gde se "best score" cuva i kako da ga primenim.
+		
 		self.gotScore.emit(self)
 	
 	signal gotScore(individual:Individual)
@@ -55,6 +55,13 @@ func Ind_got_score(ind):
 var subViews=[]
 
 func select(population):
+	var maxBestScore = 0
+	var maxIndividual = null
+	for i in population:
+		if i.bestScore > maxBestScore:
+			maxBestScore = i.bestScore
+			maxIndividual = i
+		
 	# ovde kucate kod koji obavlja proces selekcije.
 	# treba da vratite podskup populacije
 	# primer:
@@ -65,19 +72,12 @@ func select(population):
 	#####population.sort_custom(func(a, b): return a.score > b.score)  # https://www.reddit.com/r/godot/comments/kvrzto/sorting_an_array_with_names_and_scores/
 	
 	var chosen=[]
-	#chosen.append(self.bestScore)# definitivno ne moze ovako
-#	chosen.append(population[0]) # da uvek sacuva onog ciji je rezultat najbolji????????????????? Ne znam da li je ovo potrebno i da li ide ovde
-	####^red iznad sacuva najboljeg iz prethodne generacije i stavi ga na prvo mesto ali ga ne cuva ako umre opet.
+	chosen.append(maxIndividual)
 	
-	
-	#if(Ind_got_score(population[0]) > bestScore):
-		#chosen[0] = population[0]
-
-		
-	
-	for i in range(int(len(population)/2)):
-		chosen.append(population[i])  #!BITNO - u chosen mogu da stavljam samo preko population niza koliko vidim, nisam siguran.
-	
+	if population[0].bestScore == maxBestScore:
+		chosen.append(population[1])
+	else :
+		chosen.append(population[0])
 	
 		
    # shallowcopy(population[0])
@@ -106,13 +106,13 @@ func cross(population):
 		#var parent2=population[randi_range(0,len(population)-1)];
 		
 		#ideja: ako je trenutni parent1 taj sa bestScore onda taj se izabere 
-		var parent1=population[0]; #roditelji su dve amebe sa najboljim rezultatom, ne znam da li ovo zapravo ovako radi ili ne, mozda sam se zeznuo
-		var parent2=population[1];
+	var parent1=population[0]; #roditelji su dve amebe sa najboljim rezultatom, ne znam da li ovo zapravo ovako radi ili ne, mozda sam se zeznuo
+	var parent2=population[1];
 		#kopiranje matrice 
-		var child1=[]
-		var child2=[]   #ovo se trenutno ne koristi, red 96 ako zelis da ga koristis
+	var child1=[]
+	var child2=[]   #ovo se trenutno ne koristi, red 96 ako zelis da ga koristis
 		
-		for i in range(16):# broj elemenata matrice (gena)
+	for i in range(16):# broj elemenata matrice (gena)
 			var odabir=randf() 	#bacamo novcic i biramo gen prvog 
 								# ili drugog roditelja
 			if(odabir<=0.5):
@@ -121,9 +121,20 @@ func cross(population):
 			else:
 				child2.append(parent1.genes[i])
 				child1.append(parent2.genes[i])
-		children.append(Individual.new(child1,str(numberOfIndividuals)))
-	#	children.append(Individual.new(child2,str(numberOfIndividuals+1)))############################################ovo je bilo pod komentar 
-		numberOfIndividuals+=1
+	children.append(Individual.new(child1,str(numberOfIndividuals)))
+	children.append(Individual.new(child2,str(numberOfIndividuals+1)))############################################ovo je bilo pod komentar 
+	numberOfIndividuals+=2
+	
+	# ovde se dodaju jos 4 nova random
+	children.append(Individual.new(createRandom(),"{"+str(numberOfIndividuals+1)+"}"))
+	children.append(Individual.new(createRandom(),"{"+str(numberOfIndividuals+2)+"}"))
+	children.append(Individual.new(createRandom(),"{"+str(numberOfIndividuals+3)+"}"))
+	children.append(Individual.new(createRandom(),"{"+str(numberOfIndividuals+4)+"}"))
+	numberOfIndividuals+=4
+
+	
+	
+		
 	return children
 
 var numberOfIndividuals=0
